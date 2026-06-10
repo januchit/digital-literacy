@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เตรียมตัวทดสอบทักษะดิจิทัล | Digital Literacy</title>
+<meta name="description" content="คู่มืออ่านและแบบทดสอบโต้ตอบสำหรับเตรียมตัวทดสอบทักษะดิจิทัล (Digital Literacy) ครบทั้ง 7 บทเรียน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f172a; --bg2:#1e293b;
+    --card:#ffffff; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0;
+    --brand:#1d4ed8; --brand2:#2563eb; --brand-soft:#eff6ff;
+    --ok:#16a34a; --ok-soft:#dcfce7; --bad:#dc2626; --bad-soft:#fee2e2;
+    --warn:#d97706; --shadow:0 1px 3px rgba(15,23,42,.08),0 8px 24px rgba(15,23,42,.06);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'IBM Plex Sans Thai','Sarabun',system-ui,sans-serif;color:var(--ink);background:#f1f5f9;line-height:1.7;}
+  a{color:var(--brand)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 18px}
+
+  /* Header */
+  header.hero{background:linear-gradient(135deg,#1e3a8a,#2563eb 60%,#3b82f6);color:#fff;padding:46px 0 70px;position:relative;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);border-radius:50%}
+  .hero h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;letter-spacing:-.5px}
+  .hero p{margin:0;opacity:.92;font-size:1.05rem;max-width:640px}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);padding:5px 14px;border-radius:999px;font-size:.85rem;margin-bottom:16px}
+
+  /* Tabs */
+  .modebar{position:sticky;top:0;z-index:40;background:rgba(241,245,249,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-top:-34px}
+  .modebar .inner{display:flex;gap:8px;padding:12px 0}
+  .modebtn{flex:1;border:none;background:var(--card);color:var(--muted);font-family:inherit;font-size:1rem;font-weight:600;padding:14px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow);transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .modebtn.active{background:var(--brand);color:#fff}
+  .modebtn:hover{transform:translateY(-1px)}
+
+  section.page{padding:26px 0 70px;display:none}
+  section.page.show{display:block}
+
+  /* Lesson cards grid (home) */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:8px}
+  .lcard{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);cursor:pointer;border:1px solid transparent;transition:.18s;text-align:left}
+  .lcard:hover{transform:translateY(-3px);border-color:var(--brand2)}
+  .lcard .ic{font-size:2rem}
+  .lcard .ln{font-size:.8rem;color:var(--brand);font-weight:700;letter-spacing:.5px;margin-top:10px}
+  .lcard h3{margin:4px 0 2px;font-size:1.15rem}
+  .lcard .en{color:var(--muted);font-size:.85rem;margin-bottom:8px}
+  .lcard .ds{color:var(--muted);font-size:.82rem;line-height:1.5}
+  .lcard .meta{margin-top:14px;font-size:.8rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .pill{background:var(--brand-soft);color:var(--brand);padding:3px 10px;border-radius:999px;font-weight:600}
+
+  .introbox{background:var(--card);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);margin-bottom:20px;border-left:5px solid var(--brand)}
+  .introbox h2{margin:0 0 6px;font-size:1.2rem}
+  .introbox p{margin:0;color:var(--muted)}
+
+  /* Reading view */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+  .back{background:var(--card);border:1px solid var(--line);color:var(--ink);font-family:inherit;font-weight:600;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:.92rem}
+  .back:hover{background:var(--brand-soft)}
+  .lessontitle{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);margin-bottom:18px}
+  .lessontitle .ic{font-size:2.4rem}
+  .lessontitle h2{margin:0;font-size:1.4rem}
+  .lessontitle .sub{color:var(--muted);font-size:.9rem}
+
+  .q{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:14px}
+  .q .qhead{display:flex;gap:12px;align-items:flex-start}
+  .qno{flex:none;width:34px;height:34px;border-radius:9px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem}
+  .qtext{font-weight:600;font-size:1.04rem}
+  .qtype{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 9px;border-radius:999px;margin-top:6px}
+  .t-single{background:#eef2ff;color:#4338ca}
+  .t-multi{background:#fef3c7;color:#b45309}
+  .t-match,.t-order{background:#f0fdf4;color:#15803d}
+  .opts{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border:1.5px solid var(--line);border-radius:11px;cursor:pointer;transition:.12s;font-size:.97rem}
+  .opt:hover{border-color:var(--brand2);background:var(--brand-soft)}
+  .opt .key{flex:none;font-weight:700;color:var(--muted);min-width:20px}
+  .opt.correct{background:var(--ok-soft);border-color:var(--ok)}
+  .opt.correct .key{color:var(--ok)}
+  .opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+  .opt.wrong .key{color:var(--bad)}
+  .opt.sel{border-color:var(--brand2);background:var(--brand-soft)}
+  .opt .ck{margin-left:auto;font-weight:700}
+
+  .matchwrap{margin-top:14px;border:1.5px dashed var(--line);border-radius:11px;overflow:hidden}
+  .matchrow{display:grid;grid-template-columns:1fr auto 1.2fr;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .matchrow:last-child{border-bottom:none}
+  .matchrow .l{font-weight:600}
+  .matchrow .arrow{color:var(--brand)}
+  .matchrow .r{color:var(--ok);font-weight:600}
+  .matchrow .r.hidden{color:transparent;background:var(--line);border-radius:6px;user-select:none}
+  .orderlist{margin:14px 0 0;padding-left:0;list-style:none;counter-reset:o}
+  .orderlist li{counter-increment:o;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:7px;font-weight:600}
+  .orderlist li::before{content:counter(o);display:inline-flex;width:24px;height:24px;background:var(--brand);color:#fff;border-radius:6px;align-items:center;justify-content:center;font-size:.82rem;margin-right:10px}
+
+  .answerbox{margin-top:14px;background:var(--ok-soft);border:1px solid var(--ok);border-radius:11px;padding:12px 15px;display:none}
+  .answerbox.show{display:block}
+  .answerbox .a{font-weight:700;color:var(--ok);margin-bottom:5px}
+  .answerbox .e{color:#14532d;font-size:.93rem}
+  .revealbtn{margin-top:12px;background:transparent;border:1.5px solid var(--brand);color:var(--brand);font-family:inherit;font-weight:600;padding:8px 16px;border-radius:10px;cursor:pointer;font-size:.9rem}
+  .revealbtn:hover{background:var(--brand-soft)}
+
+  /* Quiz controls */
+  .quizbar{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 20px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;position:sticky;top:64px;z-index:30}
+  .quizbar .prog{font-weight:600}
+  .btn{background:var(--brand);color:#fff;border:none;font-family:inherit;font-weight:700;padding:11px 22px;border-radius:11px;cursor:pointer;font-size:.98rem;transition:.15s}
+  .btn:hover{background:var(--brand2)}
+  .btn.ghost{background:var(--card);color:var(--brand);border:1.5px solid var(--brand)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .selectrow{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+  .chip{border:1.5px solid var(--line);background:var(--card);padding:8px 14px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:600;color:var(--muted)}
+  .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+  .result{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px;text-align:center;margin-bottom:18px}
+  .scorebig{font-size:3rem;font-weight:700;color:var(--brand)}
+  .scorebar{height:14px;border-radius:999px;background:var(--line);overflow:hidden;margin:16px 0}
+  .scorebar > i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),#22c55e)}
+
+  footer{background:var(--bg);color:#94a3b8;padding:26px 0;text-align:center;font-size:.85rem}
+  footer a{color:#cbd5e1}
+  .hide{display:none!important}
+  @media(max-width:560px){
+    .quizbar{top:60px}
+    .matchrow{grid-template-columns:1fr;gap:3px;text-align:left}
+    .matchrow .arrow{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">📘 ฉบับสมบูรณ์ • ครบทั้ง 7 บทเรียน</span>
+    <h1>เตรียมตัวทดสอบทักษะดิจิทัล</h1>
+    <p>Digital Literacy — คู่มืออ่านพร้อมเฉลยและคำอธิบาย และแบบทดสอบโต้ตอบให้ลองทำเองทุกบทเรียน</p>
+  </div>
+</header>
+
+<div class="modebar">
+  <div class="wrap inner">
+    <button class="modebtn active" data-mode="home">🏠 บทเรียนทั้งหมด</button>
+    <button class="modebtn" data-mode="quiz">📝 ทำแบบทดสอบ</button>
+  </div>
+</div>
+
+<!-- HOME / READING -->
+<section id="home" class="page show">
+  <div class="wrap">
+    <div class="introbox">
+      <h2>เลือกบทเรียนเพื่อเริ่มอ่าน</h2>
+      <p>แต่ละบทมีคำถาม เฉลย และคำอธิบายครบทุกข้อ — เหมาะสำหรับทบทวนก่อนสอบ คลิกการ์ดเพื่อดูเนื้อหา</p>
+    </div>
+    <div id="lessonGrid" class="grid"></div>
+  </div>
+</section>
+
+<!-- READING DETAIL -->
+<section id="reading" class="page">
+  <div class="wrap">
+    <div class="toolbar">
+      <button class="back" id="backHome">← กลับหน้าบทเรียน</button>
+    </div>
+    <div class="lessontitle" id="readTitle"></div>
+    <div id="readBody"></div>
+    <div class="toolbar" style="margin-top:8px">
+      <button class="back" id="backHome2">← กลับหน้าบทเรียน</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="page">
+  <div class="wrap">
+    <div class="introbox">
+      <h2>โหมดทำแบบทดสอบ</h2>
+      <p>เลือกบทที่ต้องการ แล้วกด “เริ่มทำแบบทดสอบ” ระบบจะตรวจคะแนนและแสดงเฉลยให้หลังส่งคำตอบ</p>
+      <div class="selectrow" id="quizChips"></div>
+      <div style="margin-top:10px"><button class="btn" id="startQuiz">เริ่มทำแบบทดสอบ →</button></div>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    สร้างเพื่อการเตรียมสอบทักษะดิจิทัล (Digital Literacy) • เนื้อหาจากเอกสารเฉลยฉบับสมบูรณ์<br>
+    เผยแพร่ผ่าน GitHub Pages
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+const TYPE_LABEL={single:"เลือก 1 ข้อ",multi:"เลือกหลายข้อ",match:"จับคู่",order:"เรียงลำดับ"};
+
+/* ---------- Mode switching ---------- */
+function showPage(id){
+  $$(".page").forEach(p=>p.classList.remove("show"));
+  $("#"+id).classList.add("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$$(".modebtn").forEach(b=>b.addEventListener("click",()=>{
+  $$(".modebtn").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  showPage(b.dataset.mode);
+}));
+
+/* ---------- Home grid ---------- */
+function buildHome(){
+  const g=$("#lessonGrid"); g.innerHTML="";
+  LESSONS.forEach(L=>{
+    const d=document.createElement("div");
+    d.className="lcard";
+    d.innerHTML=`<div class="ic">${L.icon}</div>
+      <div class="ln">บทเรียนที่ ${L.id}</div>
+      <h3>${L.th}</h3>
+      <div class="en">${L.title}</div>
+      <div class="ds">${L.desc}</div>
+      <div class="meta"><span class="pill">${L.questions.length} ข้อ</span><span>อ่านเนื้อหา →</span></div>`;
+    d.addEventListener("click",()=>openReading(L.id));
+    g.appendChild(d);
+  });
+}
+
+/* ---------- Reading detail ---------- */
+function optionRow(o,correct){
+  const isC=correct.includes(o[0]);
+  return `<li class="opt ${isC?'correct':''}"><span class="key">${o[0]}</span><span>${o[1]}</span>${isC?'<span class="ck" style="color:var(--ok)">✔</span>':''}</li>`;
+}
+function renderQuestionRead(q){
+  let body="";
+  if(q.type==="single"||q.type==="multi"){
+    body=`<ul class="opts">${q.options.map(o=>optionRow(o,q.answer)).join("")}</ul>`;
+  }else if(q.type==="match"){
+    body=`<div class="matchwrap">${q.pairs.map(p=>`<div class="matchrow"><span class="l">${p[0]}</span><span class="arrow">→</span><span class="r">${p[1]}</span></div>`).join("")}</div>`;
+  }else if(q.type==="order"){
+    body=`<ol class="orderlist">${q.sequence.map(s=>`<li>${s}</li>`).join("")}</ol>`;
+  }
+  let ansLabel="";
+  if(q.type==="single"||q.type==="multi"){
+    ansLabel="เฉลย: "+q.answer.map(a=>{const o=q.options.find(x=>x[0]===a);return o?`${a}) ${o[1]}`:a;}).join("  •  ");
+  }else if(q.type==="order"){ ansLabel="เฉลย: "+q.sequence.join(" → "); }
+  else { ansLabel="เฉลย: "+q.pairs.map(p=>`${p[0]} → ${p[1]}`).join("  |  "); }
+  return `<div class="q">
+    <div class="qhead"><div class="qno">${q.n}</div>
+      <div><div class="qtext">${q.q}</div><span class="qtype t-${q.type}">${TYPE_LABEL[q.type]}</span></div>
+    </div>
+    ${body}
+    <div class="answerbox show"><div class="a">✔ ${ansLabel}</div><div class="e">💡 ${q.explain}</div></div>
+  </div>`;
+}
+function openReading(id){
+  const L=LESSONS.find(x=>x.id===id);
+  $("#readTitle").innerHTML=`<div class="ic">${L.icon}</div><div><h2>บทที่ ${L.id} — ${L.th}</h2><div class="sub">${L.title} • ${L.desc}</div></div>`;
+  $("#readBody").innerHTML=L.questions.map(renderQuestionRead).join("");
+  showPage("reading");
+}
+$("#backHome").addEventListener("click",()=>{showPage("home");});
+$("#backHome2").addEventListener("click",()=>{showPage("home");});
+
+/* ---------- Quiz ---------- */
+let quizState={lessons:new Set([1]),questions:[],answers:{}};
+function buildChips(){
+  const c=$("#quizChips"); c.innerHTML="";
+  const all=document.createElement("button");
+  all.className="chip"; all.textContent="ทุกบท"; all.dataset.all="1";
+  c.appendChild(all);
+  LESSONS.forEach(L=>{
+    const b=document.createElement("button");
+    b.className="chip"+(quizState.lessons.has(L.id)?" on":"");
+    b.textContent=`บท ${L.id}: ${L.th}`;
+    b.dataset.id=L.id;
+    b.addEventListener("click",()=>{
+      if(quizState.lessons.has(L.id))quizState.lessons.delete(L.id);
+      else quizState.lessons.add(L.id);
+      b.classList.toggle("on");
+    });
+    c.appendChild(b);
+  });
+  all.addEventListener("click",()=>{
+    quizState.lessons=new Set(LESSONS.map(L=>L.id));
+    $$("#quizChips .chip[data-id]").forEach(x=>x.classList.add("on"));
+  });
+}
+function startQuiz(){
+  if(quizState.lessons.size===0){alert("กรุณาเลือกอย่างน้อย 1 บทเรียน");return;}
+  // gradable questions only (single/multi); match & order shown as self-check
+  let qs=[];
+  LESSONS.filter(L=>quizState.lessons.has(L.id)).forEach(L=>{
+    L.questions.forEach(q=>qs.push({...q,_lid:L.id,_lth:L.th}));
+  });
+  quizState.questions=qs; quizState.answers={};
+  renderQuiz();
+}
+function renderQuiz(){
+  const area=$("#quizArea");
+  const total=quizState.questions.filter(q=>q.type==="single"||q.type==="multi").length;
+  let html=`<div class="quizbar"><span class="prog">รวม ${quizState.questions.length} ข้อ (ตรวจคะแนน ${total} ข้อ)</span>
+    <button class="btn" id="submitQuiz">ส่งคำตอบและดูเฉลย</button></div>`;
+  quizState.questions.forEach((q,i)=>{
+    html+=`<div class="q" data-i="${i}">
+      <div class="qhead"><div class="qno">${q.n}</div>
+        <div><div class="qtext">${q.q}</div>
+        <span class="qtype t-${q.type}">บท ${q._lid} • ${TYPE_LABEL[q.type]}</span></div></div>`;
+    if(q.type==="single"||q.type==="multi"){
+      html+=`<ul class="opts">`;
+      q.options.forEach(o=>{
+        html+=`<li class="opt" data-key="${o[0]}"><span class="key">${o[0]}</span><span>${o[1]}</span><span class="ck"></span></li>`;
+      });
+      html+=`</ul>`;
+    }else if(q.type==="match"){
+      html+=`<div class="matchwrap">${q.pairs.map(p=>`<div class="matchrow"><span class="l">${p[0]}</span><span class="arrow">→</span><span class="r hidden">${p[1]}</span></div>`).join("")}</div>
+        <button class="revealbtn">แสดงเฉลย</button>`;
+    }else if(q.type==="order"){
+      html+=`<ol class="orderlist">${q.sequence.map(s=>`<li>${s}</li>`).join("")}</ol>`;
+      html+=`<div class="answerbox"><div class="a">✔ เฉลย: ${q.sequence.join(" → ")}</div><div class="e">💡 ${q.explain}</div></div>
+        <button class="revealbtn">แสดงเฉลย</button>`;
+    }
+    html+=`<div class="answerbox" data-exp><div class="a"></div><div class="e">💡 ${q.explain}</div></div>`;
+    html+=`</div>`;
+  });
+  area.innerHTML=html;
+
+  // interaction
+  $$("#quizArea .q").forEach(qel=>{
+    const i=+qel.dataset.i; const q=quizState.questions[i];
+    if(q.type==="single"||q.type==="multi"){
+      $$(".opt",qel).forEach(opt=>{
+        opt.addEventListener("click",()=>{
+          const k=opt.dataset.key;
+          quizState.answers[i]=quizState.answers[i]||new Set();
+          if(q.type==="single"){
+            quizState.answers[i]=new Set([k]);
+            $$(".opt",qel).forEach(o=>o.classList.remove("sel"));
+            opt.classList.add("sel");
+          }else{
+            if(quizState.answers[i].has(k)){quizState.answers[i].delete(k);opt.classList.remove("sel");}
+            else{quizState.answers[i].add(k);opt.classList.add("sel");}
+          }
+        });
+      });
+    }
+    const rb=$(".revealbtn",qel);
+    if(rb)rb.addEventListener("click",()=>{
+      $$(".r.hidden",qel).forEach(x=>x.classList.remove("hidden"));
+      const ab=$(".answerbox",qel); if(ab)ab.classList.add("show");
+      rb.classList.add("hide");
+    });
+  });
+  $("#submitQuiz").addEventListener("click",submitQuiz);
+  showPage("quiz");
+  $$(".modebtn").forEach(x=>x.classList.remove("active"));
+  $('.modebtn[data-mode="quiz"]').classList.add("active");
+}
+function eqSet(a,b){if(a.size!==b.size)return false;for(const x of a)if(!b.has(x))return false;return true;}
+function submitQuiz(){
+  let correct=0,total=0;
+  $$("#quizArea .q").forEach(qel=>{
+    const i=+qel.dataset.i; const q=quizState.questions[i];
+    if(q.type!=="single"&&q.type!=="multi")return;
+    total++;
+    const ans=quizState.answers[i]||new Set();
+    const key=new Set(q.answer);
+    const right=eqSet(ans,key);
+    if(right)correct++;
+    $$(".opt",qel).forEach(opt=>{
+      const k=opt.dataset.key;
+      opt.style.pointerEvents="none";
+      opt.classList.remove("sel");
+      if(key.has(k)){opt.classList.add("correct");$(".ck",opt).textContent="✔";}
+      if(ans.has(k)&&!key.has(k)){opt.classList.add("wrong");$(".ck",opt).textContent="✗";}
+    });
+    const exp=$("[data-exp]",qel);
+    const lbl="เฉลย: "+q.answer.map(a=>{const o=q.options.find(x=>x[0]===a);return o?`${a}) ${o[1]}`:a;}).join("  •  ");
+    $(".a",exp).textContent=(right?"✔ ถูกต้อง — ":"✗ ")+lbl;
+    $(".a",exp).style.color=right?"var(--ok)":"var(--bad)";
+    exp.style.background=right?"var(--ok-soft)":"var(--bad-soft)";
+    exp.style.borderColor=right?"var(--ok)":"var(--bad)";
+    exp.classList.add("show");
+  });
+  const pct=total?Math.round(correct/total*100):0;
+  const res=document.createElement("div");
+  res.className="result";
+  let msg = pct>=80?"เยี่ยมมาก! พร้อมสอบแล้ว 🎉" : pct>=50?"ดีแล้ว ทบทวนอีกนิดนะ 💪" : "ลองทบทวนเนื้อหาอีกครั้งนะ 📚";
+  res.innerHTML=`<div class="scorebig">${correct}/${total}</div>
+    <div style="color:var(--muted)">คิดเป็น ${pct}%</div>
+    <div class="scorebar"><i style="width:${pct}%"></i></div>
+    <div style="font-weight:600;margin-bottom:14px">${msg}</div>
+    <button class="btn ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">ดูเฉลยด้านบน</button>
+    <button class="btn" id="retry">ทำใหม่อีกครั้ง</button>`;
+  $("#quizArea").prepend(res);
+  $("#submitQuiz").disabled=true;
+  $("#retry").addEventListener("click",()=>{startQuiz();window.scrollTo({top:0,behavior:'smooth'});});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("#startQuiz").addEventListener("click",startQuiz);
+
+/* init */
+buildHome();
+buildChips();
+</script>
+</body>
+</html>
