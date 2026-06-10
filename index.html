@@ -91,6 +91,11 @@
   .matchrow .arrow{color:var(--brand)}
   .matchrow .r{color:var(--ok);font-weight:600}
   .matchrow .r.hidden{color:transparent;background:var(--line);border-radius:6px;user-select:none}
+  .qimg{width:100%;max-width:520px;border-radius:10px;margin:12px 0 4px;display:block;border:1px solid var(--line)}
+  .matchrow select{font-family:inherit;font-size:.93rem;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);cursor:pointer;min-width:160px}
+  .matchrow select:focus{outline:none;border-color:var(--brand2)}
+  .matchrow select.correct{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+  .matchrow select.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
   .orderlist{margin:14px 0 0;padding-left:0;list-style:none;counter-reset:o}
   .orderlist li{counter-increment:o;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:7px;font-weight:600}
   .orderlist li::before{content:counter(o);display:inline-flex;width:24px;height:24px;background:var(--brand);color:#fff;border-radius:6px;align-items:center;justify-content:center;font-size:.82rem;margin-right:10px}
@@ -230,14 +235,17 @@ function optionRow(o,correct){
   const isC=correct.includes(o[0]);
   return `<li class="opt ${isC?'correct':''}"><span class="key">${o[0]}</span><span>${o[1]}</span>${isC?'<span class="ck" style="color:var(--ok)">✔</span>':''}</li>`;
 }
+function qImgHtml(q){
+  return q.img ? `<img class="qimg" src="${q.img}" alt="ภาพประกอบคำถาม">` : "";
+}
 function renderQuestionRead(q){
   let body="";
   if(q.type==="single"||q.type==="multi"){
-    body=`<ul class="opts">${q.options.map(o=>optionRow(o,q.answer)).join("")}</ul>`;
+    body=`${qImgHtml(q)}<ul class="opts">${q.options.map(o=>optionRow(o,q.answer)).join("")}</ul>`;
   }else if(q.type==="match"){
-    body=`<div class="matchwrap">${q.pairs.map(p=>`<div class="matchrow"><span class="l">${p[0]}</span><span class="arrow">→</span><span class="r">${p[1]}</span></div>`).join("")}</div>`;
+    body=`${qImgHtml(q)}<div class="matchwrap">${q.pairs.map(p=>`<div class="matchrow"><span class="l">${p[0]}</span><span class="arrow">→</span><span class="r">${p[1]}</span></div>`).join("")}</div>`;
   }else if(q.type==="order"){
-    body=`<ol class="orderlist">${q.sequence.map(s=>`<li>${s}</li>`).join("")}</ol>`;
+    body=`${qImgHtml(q)}<ol class="orderlist">${q.sequence.map(s=>`<li>${s}</li>`).join("")}</ol>`;
   }
   let ansLabel="";
   if(q.type==="single"||q.type==="multi"){
@@ -297,14 +305,15 @@ function startQuiz(){
 }
 function renderQuiz(){
   const area=$("#quizArea");
-  const total=quizState.questions.filter(q=>q.type==="single"||q.type==="multi").length;
-  let html=`<div class="quizbar"><span class="prog">รวม ${quizState.questions.length} ข้อ (ตรวจคะแนน ${total} ข้อ)</span>
+  const gradable=quizState.questions.filter(q=>q.type==="single"||q.type==="multi"||q.type==="match").length;
+  let html=`<div class="quizbar"><span class="prog">รวม ${quizState.questions.length} ข้อ (ตรวจคะแนน ${gradable} ข้อ)</span>
     <button class="btn" id="submitQuiz">ส่งคำตอบและดูเฉลย</button></div>`;
   quizState.questions.forEach((q,i)=>{
     html+=`<div class="q" data-i="${i}">
       <div class="qhead"><div class="qno">${q.n}</div>
         <div><div class="qtext">${q.q}</div>
         <span class="qtype t-${q.type}">บท ${q._lid} • ${TYPE_LABEL[q.type]}</span></div></div>`;
+    if(q.img) html+=`<img class="qimg" src="${q.img}" alt="ภาพประกอบ">`;
     if(q.type==="single"||q.type==="multi"){
       html+=`<ul class="opts">`;
       q.options.forEach(o=>{
@@ -312,8 +321,16 @@ function renderQuiz(){
       });
       html+=`</ul>`;
     }else if(q.type==="match"){
-      html+=`<div class="matchwrap">${q.pairs.map(p=>`<div class="matchrow"><span class="l">${p[0]}</span><span class="arrow">→</span><span class="r hidden">${p[1]}</span></div>`).join("")}</div>
-        <button class="revealbtn">แสดงเฉลย</button>`;
+      const rights=[...q.pairs.map(p=>p[1])].sort(()=>Math.random()-.5);
+      html+=`<div class="matchwrap">`;
+      q.pairs.forEach((p,pi)=>{
+        html+=`<div class="matchrow"><span class="l">${p[0]}</span><span class="arrow">→</span>
+          <select data-pi="${pi}" data-ans="${p[1]}">
+            <option value="">-- เลือก --</option>
+            ${rights.map(r=>`<option value="${r}">${r}</option>`).join("")}
+          </select></div>`;
+      });
+      html+=`</div>`;
     }else if(q.type==="order"){
       html+=`<ol class="orderlist">${q.sequence.map(s=>`<li>${s}</li>`).join("")}</ol>`;
       html+=`<div class="answerbox"><div class="a">✔ เฉลย: ${q.sequence.join(" → ")}</div><div class="e">💡 ${q.explain}</div></div>
@@ -360,26 +377,44 @@ function submitQuiz(){
   let correct=0,total=0;
   $$("#quizArea .q").forEach(qel=>{
     const i=+qel.dataset.i; const q=quizState.questions[i];
-    if(q.type!=="single"&&q.type!=="multi")return;
-    total++;
-    const ans=quizState.answers[i]||new Set();
-    const key=new Set(q.answer);
-    const right=eqSet(ans,key);
-    if(right)correct++;
-    $$(".opt",qel).forEach(opt=>{
-      const k=opt.dataset.key;
-      opt.style.pointerEvents="none";
-      opt.classList.remove("sel");
-      if(key.has(k)){opt.classList.add("correct");$(".ck",opt).textContent="✔";}
-      if(ans.has(k)&&!key.has(k)){opt.classList.add("wrong");$(".ck",opt).textContent="✗";}
-    });
     const exp=$("[data-exp]",qel);
-    const lbl="เฉลย: "+q.answer.map(a=>{const o=q.options.find(x=>x[0]===a);return o?`${a}) ${o[1]}`:a;}).join("  •  ");
-    $(".a",exp).textContent=(right?"✔ ถูกต้อง — ":"✗ ")+lbl;
-    $(".a",exp).style.color=right?"var(--ok)":"var(--bad)";
-    exp.style.background=right?"var(--ok-soft)":"var(--bad-soft)";
-    exp.style.borderColor=right?"var(--ok)":"var(--bad)";
-    exp.classList.add("show");
+    if(q.type==="single"||q.type==="multi"){
+      total++;
+      const ans=quizState.answers[i]||new Set();
+      const key=new Set(q.answer);
+      const right=eqSet(ans,key);
+      if(right)correct++;
+      $$(".opt",qel).forEach(opt=>{
+        const k=opt.dataset.key;
+        opt.style.pointerEvents="none";
+        opt.classList.remove("sel");
+        if(key.has(k)){opt.classList.add("correct");$(".ck",opt).textContent="✔";}
+        if(ans.has(k)&&!key.has(k)){opt.classList.add("wrong");$(".ck",opt).textContent="✗";}
+      });
+      const lbl="เฉลย: "+q.answer.map(a=>{const o=q.options.find(x=>x[0]===a);return o?`${a}) ${o[1]}`:a;}).join("  •  ");
+      $(".a",exp).textContent=(right?"✔ ถูกต้อง — ":"✗ ")+lbl;
+      $(".a",exp).style.color=right?"var(--ok)":"var(--bad)";
+      exp.style.background=right?"var(--ok-soft)":"var(--bad-soft)";
+      exp.style.borderColor=right?"var(--ok)":"var(--bad)";
+      exp.classList.add("show");
+    }else if(q.type==="match"){
+      total++;
+      const sels=$$("select",qel);
+      let allRight=true;
+      sels.forEach(sel=>{
+        sel.disabled=true;
+        const right=sel.value===sel.dataset.ans;
+        if(!right)allRight=false;
+        sel.classList.add(right?"correct":"wrong");
+      });
+      if(allRight)correct++;
+      const lbl="เฉลย: "+q.pairs.map(p=>`${p[0]} → ${p[1]}`).join("  |  ");
+      $(".a",exp).textContent=(allRight?"✔ ถูกต้องทุกคู่ — ":"✗ ")+lbl;
+      $(".a",exp).style.color=allRight?"var(--ok)":"var(--bad)";
+      exp.style.background=allRight?"var(--ok-soft)":"var(--bad-soft)";
+      exp.style.borderColor=allRight?"var(--ok)":"var(--bad)";
+      exp.classList.add("show");
+    }
   });
   const pct=total?Math.round(correct/total*100):0;
   const res=document.createElement("div");
